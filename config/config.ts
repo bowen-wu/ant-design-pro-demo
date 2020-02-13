@@ -123,6 +123,12 @@ export default {
               component: './manage_funds',
             },
             {
+              name: '订单管理',
+              icon: 'ordered-list',
+              path: '/manage_order',
+              component: './manage_order',
+            },
+            {
               component: './404',
             },
           ],

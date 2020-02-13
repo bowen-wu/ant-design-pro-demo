@@ -14,7 +14,8 @@ export default () => {
       age: 32,
       address: "New York No. 1 Lake Park",
       tags: ["nice", "developer"],
-      status: 'disable'
+      status: 'disable',
+      islock: 0,
     },
     {
       key: "2",
@@ -23,6 +24,7 @@ export default () => {
       address: "London No. 1 Lake Park",
       tags: ["loser"],
       status: 'enable',
+      islock: 1,
     },
     {
       key: "3",
@@ -31,6 +33,7 @@ export default () => {
       address: "Sidney No. 1 Lake Park",
       tags: ["cool", "teacher"],
       status: 'disable',
+      islock: 0,
     }
   ];
   useEffect(() => {

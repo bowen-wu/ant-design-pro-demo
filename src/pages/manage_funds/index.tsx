@@ -12,7 +12,7 @@ export default () => {
       setLoading(false);
     }, 3000);
   }, []);
-  const dataSource = [{settlement_status: 'disable'}, {settlement_status: 'enable'}];
+  const dataSource = [{id: '1', isDelete: '1'}, {id: '2', isDelete: '0'}];
   return (
     <PageHeaderWrapper className={styles.main}>
       <SearchForm page='manage_funds' />

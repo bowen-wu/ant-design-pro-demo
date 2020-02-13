@@ -1,18 +1,24 @@
 // searchItem 的 type === rangePicker 时，default 必须是数组，且 length === 2
 
-import {getLastMonthStr} from '../utils/utils';
-import moment from 'moment';
+import {getDayStr} from '../utils/utils';
 
+const lastDayStr = getDayStr(-1);
 const isDefault = true;
+const pageObj = {
+  basePageNum: 1,
+  basePageSize: 10,
+};
 
 export default {
   manage_user: {
+    detailsUrl: '',
+    requestUrl: '',
     searchInfo: {
       searchList: [
         {
           type: 'input',
           label: '用户手机号',
-          key: 'user_phone',
+          key: 'mobile',
         }, {
           type: 'rangePicker',
           label: '选择创建日期',
@@ -35,33 +41,48 @@ export default {
           key: 'id',
         }, {
           title: '用户昵称',
-          dataIndex: 'nickname',
-          key: 'nickname',
+          dataIndex: 'nickName',
+          key: 'nickName',
         }, {
           title: '用户手机号',
-          dataIndex: 'mobile_phone',
-          key: 'mobile_phone',
+          dataIndex: 'mobile',
+          key: 'mobile',
         }, {
           title: '用户简介',
-          dataIndex: 'introduction',
-          key: 'introduction',
+          dataIndex: 'brief',
+          key: 'brief',
         }, {
           title: '状态',
-          dataIndex: 'status',
-          key: 'status',
+          dataIndex: 'islock',
+          key: 'islock',
+          needRender: true,
+          enumerate: {
+            0: '停用',
+            1: '启用',
+          },
         }, {
           title: '创建时间',
-          dataIndex: 'create_time',
-          key: 'create_time',
+          dataIndex: 'gmtCreate',
+          key: 'gmtCreate',
         }
       ],
       actionList: [
         {
           key: 'status',
-          depend: 'status',
+          depend: 'islock',
+          type: 'popconfirm',
+          exchangeStatusUrl: '',
+          exchangeStatusParamsKeyObj: {appUserId: 'id', islock: 'islock'},
+          exchangeStatusKey: 'islock',
+          extraInfo: {
+            title: {
+              0: '你确定要停用该用户么？',
+              1: '你确定要启用该用户么',
+            },
+          },
           status: {
-            disable: '停用',
-            enable: '启用',
+            0: '停用',
+            1: '启用',
           }
         }, {
           route: '/manage_user/detail',
@@ -69,38 +90,120 @@ export default {
         },
       ]
     },
+    ...pageObj,
   },
   manage_funds: {
+    requestUrl: '',
+    searchInfo: {},
+    tableInfo: {
+      columnList: [
+        {
+          title: '商品ID',
+          dataIndex: 'gid',
+          key: 'gid',
+        }, {
+          title: '商品名称',
+          dataIndex: 'goodsName',
+          key: 'goodsName',
+        }, {
+          title: '状态',
+          dataIndex: 'isDelete',
+          key: 'isDelete',
+          needRender: true,
+          enumerate: {
+            0: '上架',
+            1: '下架',
+          },
+        }, {
+          title: '更新时间',
+          dataIndex: 'mofityTime',
+          key: 'mofityTime',
+        }
+      ],
+      actionList: [
+        {
+          key: 'status',
+          depend: 'isDelete',
+          type: 'popconfirm',
+          exchangeStatusUrl: '/goods/modifyGoodsRecord',
+          exchangeStatusParamsKeyObj: {gid: 'gid', isDelete: 'isDelete'},
+          exchangeStatusKey: 'isDelete',
+          exchangeStatusParamsPosition: 'data',
+          extraInfo: {
+            title: {
+              0: '你确定要下架该商品么？',
+              1: '你确定要上架该商品么？',
+            },
+          },
+          status: {
+            0: '下架',
+            1: '上架',
+          }
+        }, {
+          route: '/manage_commodity/detail',
+          key: 'detail',
+        },],
+    },
+    ...pageObj,
+  },
+  manage_order: {
+    requestUrl: '',
     searchInfo: {
       searchList: [
         {
           type: 'input',
-          label: '用户手机号',
-          key: 'user_phone',
+          label: '订单编号',
+          key: 'orderNo'
         }, {
           type: 'select',
-          label: '结算状态',
-          key: 'settlement_status',
+          label: '订单状态',
+          key: 'status',
           optionList: [
             {
               value: 'all',
               label: '全部',
               isDefault,
             }, {
-              value: 'unsettle',
-              label: '未结算',
+              value: '0',
+              label: '待付款',
             }, {
-              value: 'settled',
-              label: '已结算',
+              value: '6',
+              label: '待发货',
+            }, {
+              value: '7',
+              label: '待收货',
+            }, {
+              value: '4',
+              label: '待制作',
+            }, {
+              value: '1',
+              label: '已完成',
+            }, {
+              value: '5',
+              label: '制作中',
+            }, {
+              value: '2',
+              label: '已取消',
+            }, {
+              value: '8',
+              label: '待退货',
+            }, {
+              value: '3',
+              label: '已退款',
             },
           ]
         }, {
-          type: 'monthPicker',
-          label: '结算周期',
-          key: 'settlement_cycle',
-          default: getLastMonthStr(),
-          disabledDate: (current: any) => current && current >= moment().startOf('month'),
-        }
+          type: 'input',
+          label: '购买用户手机号',
+          key: 'mobile',
+        }, {
+          type: 'rangePicker',
+          label: '选择创建日期',
+          key: 'order_create_time',
+          needRender: true,
+          renderDepend: ['startDate', 'endDate'],
+          default: [lastDayStr, lastDayStr],
+        },
       ],
       searchActions: [
         {
@@ -108,12 +211,8 @@ export default {
           type: 'primary',
           key: 'search',
         }, {
-          text: '批量结算',
-          type: 'primary',
-          key: 'bulk_settlement',
-        }, {
           text: '导出',
-          type: '',
+          type: 'primary',
           key: 'export',
         }
       ],
@@ -121,50 +220,97 @@ export default {
     tableInfo: {
       columnList: [
         {
-          title: '结算流水',
-          dataIndex: 'id',
-          key: 'id',
+          title: '订单编号',
+          dataIndex: 'orderNo',
+          key: 'orderNo',
         }, {
-          title: '结算周期',
-          dataIndex: 'cycle',
-          key: 'cycle',
+          title: '购买用户',
+          dataIndex: 'userMobile',
+          key: 'userMobile',
         }, {
-          title: '用户手机号',
-          dataIndex: 'mobile_phone',
-          key: 'mobile_phone',
+          title: '商品名称',
+          dataIndex: 'goodsName',
+          key: 'goodsName',
         }, {
-          title: '结算金额',
-          dataIndex: 'settlement_amount',
-          key: 'settlement_amount',
+          title: '作品名称',
+          dataIndex: 'showName',
+          key: 'showName',
         }, {
-          title: '账户明细',
-          dataIndex: 'detail',
-          key: 'detail',
+          title: '订单金额',
+          dataIndex: 'amount',
+          key: 'amount',
         }, {
-          title: '结算信息',
-          dataIndex: 'settlement_info',
-          key: 'settlement_info',
+          title: '支付方式',
+          dataIndex: 'payType',
+          key: 'payType',
+          needRender: true,
+          enumerate: {
+            1: '微信',
+            2: '支付宝',
+          },
         }, {
-          title: '结算状态',
-          dataIndex: 'settlement_status',
-          key: 'settlement_status',
+          title: '订单数量',
+          dataIndex: 'goodsNum',
+          key: 'goodsNum',
+        }, {
+          title: '商品大小',
+          dataIndex: 'type',
+          key: 'type',
+          needRender: true,
+          enumerate: {
+            1: '小号',
+            2: '中号',
+            3: '大号',
+          },
+        }, {
+          title: '商品颜色',
+          dataIndex: 'colour',
+          key: 'colour',
+        }, {
+          title: '收货地址',
+          dataIndex: 'goodsReceiveAddress',
+          key: 'goodsReceiveAddress',
+        }, {
+          title: '订单状态',
+          dataIndex: 'status',
+          key: 'status',
+          needRender: true,
+          enumerate: {
+            0: '待支付',
+            1: '已支付',
+            2: '已取消',
+            3: '已退款',
+            4: '待制作',
+            5: '制作中',
+            6: '待发货',
+            7: '待收货',
+            8: '待退货',
+          },
         }, {
           title: '创建时间',
-          dataIndex: 'create_time',
-          key: 'create_time',
-        }
+          dataIndex: 'gmtCreate',
+          key: 'gmtCreate',
+        }, {
+          title: '更新时间',
+          dataIndex: 'gmtModified',
+          key: 'gmtModified',
+        },
       ],
       actionList: [
         {
+          key: 'update_status',
+          text: '更新状态',
+        }, {
           key: 'status',
-          depend: 'settlement_status',
+          depend: 'status',
           status: {
-            disable: '已结算',
-            enable: '/',
+            to_be_returned: '退款信息',
+            refunded: '退款信息',
           }
         }
-      ]
+      ],
     },
+    ...pageObj,
   },
   span_item: {
     input: 5,

@@ -3,7 +3,7 @@ import styles from "./index.less";
 import {Select, Input, Row, Col, Button, DatePicker} from "antd";
 import moment from 'moment';
 import DB from '../../../DB/index';
-import {PropsInterface, ButtonType} from '../../Interface';
+import {PropsInterface, ActionInterface} from '../../Interface';
 
 const {Option} = Select;
 const {MonthPicker, RangePicker} = DatePicker;
@@ -31,15 +31,9 @@ interface SearchItemInterface {
   disabledDate?: SearchItemDisabledDateInterface
 }
 
-interface ActionInterface {
-  text: string,
-  type: ButtonType,
-  key: string,
-}
-
 export default (props: PropsInterface) => {
   const {page} = props;
-  const {searchInfo: {searchList, searchActions, flexDirection}} = DB[page];
+  const {searchInfo: {searchList = [], searchActions = [], flexDirection}} = DB[page];
   const [searchInfo, setSearchInfo] = useState<object>({});
 
   useEffect(() => {
@@ -50,9 +44,7 @@ export default (props: PropsInterface) => {
 
   const updateSearchInfo = (info: Object) => setSearchInfo(Object.assign({}, searchInfo, info));
 
-  const actionHandle = (actionKey: string) => {
-    console.log('searchInfo -> ', searchInfo, actionKey);
-  };
+  const actionHandle = (action: ActionInterface) => props.actionsHandle && props.actionsHandle(action, searchInfo);
 
   const handleChange = (value: string, key: string) => updateSearchInfo({[key]: value});
 
@@ -105,7 +97,7 @@ export default (props: PropsInterface) => {
           </Col>
         ))}
         <div className={styles[`${flexDirection ? 'actionColumn' : 'action'}`]}>
-          {searchActions.map((action: ActionInterface) => (<Button key={action.key} type={action.type} onClick={() => actionHandle(action.key)}>{action.text}</Button>))}
+          {searchActions.map((action: ActionInterface) => (<Button key={action.key} type={action.type} onClick={() => actionHandle(action)}>{action.text}</Button>))}
         </div>
       </Row>
     </div>
