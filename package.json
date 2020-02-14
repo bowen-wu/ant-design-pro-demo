@@ -34,13 +34,6 @@
     }
   },
   "lint-staged": {
-    "**/*.less": "stylelint --syntax less",
-    "**/*.{js,jsx,tsx,ts,less,md,json}": [
-      "prettier --write",
-      "git add"
-    ],
-    "**/*.{js,jsx}": "npm run lint-staged:js",
-    "**/*.{js,ts,tsx}": "npm run lint-staged:js"
   },
   "browserslist": [
     "> 1%",
@@ -52,6 +45,7 @@
     "@ant-design/pro-table": "^1.0.13",
     "@antv/data-set": "^0.10.2",
     "antd": "^3.23.6",
+    "braft-editor": "^2.3.8",
     "classnames": "^2.2.6",
     "dva": "^2.6.0-beta.16",
     "lodash": "^4.17.11",
@@ -111,12 +105,5 @@
   },
   "engines": {
     "node": ">=10.0.0"
-  },
-  "checkFiles": [
-    "src/**/*.js*",
-    "src/**/*.ts*",
-    "src/**/*.less",
-    "config/**/*.js*",
-    "scripts/**/*.js"
-  ]
+  }
 }

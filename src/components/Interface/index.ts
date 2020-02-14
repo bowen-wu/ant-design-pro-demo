@@ -1,4 +1,4 @@
-import {Dispatch, AnyAction} from 'redux';
+import { Dispatch, AnyAction } from 'redux';
 
 export enum ButtonType {
   Primary = 'primary',
@@ -136,9 +136,11 @@ export interface DetailsModelState {
   info: ObjectInterface;
 }
 
-export interface ModifyModelState {
-}
-
 export interface GlobalModelState {
   uploadFileUrl: string;
+}
+
+export interface RichTextEditorPropsInterface {
+  title: string;
+  htmlContent: string;
 }
